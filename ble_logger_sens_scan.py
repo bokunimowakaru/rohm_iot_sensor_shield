@@ -317,7 +317,7 @@ pi@raspberrypi:~ $ git clone http://github.com/bokunimowakaru/rohm_iot_sensor_sh
 pi@raspberrypi:~ $ cd ~/rohm_iot_sensor_shield
 pi@raspberrypi:~/rohm_iot_sensor_shield $ sudo ./ble_logger_sens_scan.py
 
-Device xx:xx:xx:xx:xx:xx (public), RSSI=-56 dB, Connectable=True
+Device xx:xx:xx:xx:xx:xx (public), RSSI=-69 dB, Connectable=True
     1 Flags = 06
     9 Complete Local Name = R
   255 Manufacturer = 01004c6cf10093009aff59ff0a0fc40080fee0fcdf521f
