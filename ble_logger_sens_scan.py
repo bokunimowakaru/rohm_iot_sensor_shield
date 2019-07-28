@@ -30,7 +30,7 @@
 #   https://ianharvey.github.io/bluepy-doc/scanner.html
 #   https://www.rohm.co.jp/documents/11401/3946483/sensormedal-evk-002_ug-j.pdf
 
-ambient_chid='0000'                 # ここにAmbientで取得したチャネルIDを入力
+ambient_chid='00000'                # ここにAmbientで取得したチャネルIDを入力
 ambient_wkey='0123456789abcdef'     # ここにはライトキーを入力
 ambient_interval = 30               # Ambientへの送信間隔
 interval = 1.01                     # 動作間隔
@@ -290,7 +290,7 @@ while True:
     body_dict['d6'] = sensors.get('Geomagnetic')
     body_dict['d7'] = sensors.get('Steps')
     if not body_dict['d7']:
-        body_dict['d7'] = sensors.get('Proximity')
+        body_dict['d7'] = sensors.get('Color R')
     body_dict['d8'] = sensors.get('Battery Level')
     if not body_dict['d8']:
         body_dict['d8'] = sensors.get('Color IR')
