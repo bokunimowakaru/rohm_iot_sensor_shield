@@ -51,8 +51,8 @@ Rasperry Piで実行すると、各Bluetooth LE対応IoTセンサが送信する
 
 	pi@raspberrypi:~ $ cd  
 	pi@raspberrypi:~ $ git clone http://github.com/bokunimowakaru/rohm_iot_sensor_shield  
-	pi@raspberrypi:~ $ cd ~/esp/rohm_iot_sensor_shield  
-	pi@raspberrypi:~/esp/rohm_iot_sensor_shield $ sudo ./ble_logger_sens_scan.py  
+	pi@raspberrypi:~ $ cd ~/rohm_iot_sensor_shield  
+	pi@raspberrypi:~/rohm_iot_sensor_shield $ sudo ./ble_logger_sens_scan.py  
 	  
 	Device xx:xx:xx:xx:xx:xx (public), RSSI=-56 dB  
 	  Flags = 06  
