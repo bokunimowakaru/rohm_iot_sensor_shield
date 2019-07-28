@@ -54,10 +54,10 @@ Rasperry Piで実行すると、各Bluetooth LE対応IoTセンサが送信する
 	pi@raspberrypi:~ $ cd ~/rohm_iot_sensor_shield  
 	pi@raspberrypi:~/rohm_iot_sensor_shield $ sudo ./ble_logger_sens_scan.py  
 	  
-	Device xx:xx:xx:xx:xx:xx (public), RSSI=-56 dB  
-	  Flags = 06  
-	  Complete Local Name = R  
-	  Manufacturer = 01004c6cf10093009aff59ff0a0fc40080fee0fcdf521f  
+	Device xx:xx:xx:xx:xx:xx (public), RSSI=-69 dB  
+	    1 Flags = 06  
+	    9 Complete Local Name = R  
+	  255 Manufacturer = 01004c6cf10093009aff59ff0a0fc40080fee0fcdf521f  
 	    ID            = 0x1  
 	    SEQ           = 147  
 	    Temperature   = 29.03 ℃  
