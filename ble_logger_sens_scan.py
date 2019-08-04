@@ -92,7 +92,6 @@ def printval(dict, name, n, unit):
 
 scanner = btle.Scanner()
 time = 999
-isMedalAvail = False
 if ambient_interval < 30:
     ambient_interval = 30
 
@@ -279,7 +278,6 @@ while True:
         time += 1
         continue
     time = 0
-    isMedalAvail = False
     body_dict['d1'] = sensors.get('Temperature')
     body_dict['d2'] = sensors.get('Humidity')
     if not body_dict['d2']:
