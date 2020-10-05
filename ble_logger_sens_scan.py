@@ -45,6 +45,7 @@ from time import sleep
 import urllib.request                           # HTTP通信ライブラリを組み込む
 import json                                     # JSON変換ライブラリを組み込む
 import datetime
+import subprocess
 
 url_s = 'https://ambidata.io/api/v2/channels/'+ambient_chid+'/data' # アクセス先
 head_dict = {'Content-Type':'application/json'} # ヘッダを変数head_dictへ
@@ -90,6 +91,10 @@ def printval(dict, name, n, unit):
     else:
         print()
 
+# MAIN
+if getpass.getuser() != 'root':
+    print('使用方法: sudo', argv[0])
+    exit()
 scanner = btle.Scanner()
 time = 999
 if ambient_interval < 30:
@@ -101,9 +106,9 @@ while True:
         devices = scanner.scan(interval)
     except Exception as e:
         print("ERROR",e)
-        if getpass.getuser() != 'root':
-            print('使用方法: sudo', argv[0])
-            exit()
+        subprocess.call(["hciconfig", "hci0", "down"])
+        sleep(5)
+        subprocess.call(["hciconfig", "hci0", "up"])
         sleep(interval)
         continue
     sensors = dict()
@@ -130,10 +135,14 @@ while True:
             # Spresens用 IoTセンサ
             if adtype == 8 and value[0:8]  == 'LapisDev':
                 isRohmMedal = 'Spresense Rohm IoT'
+            # Lapis MK715用 IoTセンサ
+            if (adtype == 8 or adtype == 9) and (value  == 'nRF5x'):
+                isRohmMedal = 'Nordic nRF5'
             if desc == 'Manufacturer':
                 val = value
             if isRohmMedal == '' or val == '':
                 continue
+            # print("\nDevice %s (%s), RSSI=%d dB, Connectable=%s" % (dev.addr, dev.addrType, dev.rssi, dev.connectable))
             sensors = dict()
             print('    isRohmMedal   =',isRohmMedal)
 
@@ -236,9 +245,18 @@ while True:
                 sensors['SEQ'] = payval(9)
                 sensors['RSSI'] = dev.rssi
 
+            if isRohmMedal == 'Nordic nRF5':
+                sensors['ID'] = hex(payval(2,2))
+                sensors['Button'] = format(payval(6), '04b')
+                sensors['Temperature'] = -45 + 175 * payval(4,2) / 65536
+                sensors['Humidity'] = payval(7,2) / 65536 * 100
+                sensors['SEQ'] = payval(9)
+                sensors['RSSI'] = dev.rssi
+
             if sensors:
                 printval(sensors, 'ID', 0, '')
                 printval(sensors, 'SEQ', 0, '')
+                printval(sensors, 'Button', 0, '')
                 printval(sensors, 'Temperature', 2, '℃')
                 printval(sensors, 'Humidity', 2, '%')
                 printval(sensors, 'Pressure', 3, 'hPa')
@@ -264,8 +282,14 @@ while True:
                     if (sensor.find(' ') >= 0 or len(sensor) <= 5 or sensor == 'Magnetic') and sensor != 'Color R':
                         continue
                     s = date.strftime('%Y/%m/%d %H:%M')
-                  # s += ', ' + sensor
-                    s += ', ' + str(round(sensors[sensor],3))
+                    # s += ', ' + sensor
+                    if sensor == 'Button':
+                        s += ', ' + sensors['Button'][3]
+                        s += ', ' + sensors['Button'][2]
+                        s += ', ' + sensors['Button'][1]
+                        s += ', ' + sensors['Button'][0]
+                    else:
+                        s += ', ' + str(round(sensors[sensor],3))
                     if sensor == 'Color R':
                         s += ', ' + str(round(sensors['Color R'],3))
                         s += ', ' + str(round(sensors['Color G'],3))
@@ -280,7 +304,7 @@ while True:
                         s += ', ' + str(round(sensors['Geomagnetic X'],3))
                         s += ', ' + str(round(sensors['Geomagnetic Y'],3))
                         s += ', ' + str(round(sensors['Geomagnetic Z'],3))
-                  # print(s, '-> ' + sensor + '.csv') 
+                    # print(s, '-> ' + sensor + '.csv') 
                     save(sensor + '.csv', s)
 
     # クラウドへの送信処理
@@ -311,6 +335,7 @@ while True:
         res = urllib.request.urlopen(post)          # HTTPアクセスを実行
     except Exception as e:                          # 例外処理発生時
         print(e,url_s)                              # エラー内容と変数url_sを表示
+        continue
     res_str = res.read().decode()                   # 受信テキストを変数res_strへ
     res.close()                                     # HTTPアクセスの終了
     if len(res_str):                                # 受信テキストがあれば
